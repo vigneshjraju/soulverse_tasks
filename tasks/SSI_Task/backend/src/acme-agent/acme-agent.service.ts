@@ -83,9 +83,15 @@ export class AcmeAgentService {
                             })
                         ]
                     }),
-
-
-
+                    
+                    proofs: new ProofsModule({
+                        proofProtocols: [
+                            new V2ProofProtocol({
+                                proofFormats: [new AnonCredsProofFormatService()],
+                            })
+                        ],
+                        autoAcceptProofs: AutoAcceptProof.ContentApproved,
+                    }),
 
                 },
         })
