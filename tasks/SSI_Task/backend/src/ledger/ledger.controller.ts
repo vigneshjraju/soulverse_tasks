@@ -47,19 +47,19 @@ export class LedgerController {
         return result;
     }
 
-    @Get('schema/:schemaId')
-    @ApiOperation({ summary: 'Get schema by ID' })
-    async getSchema(@Param('schemaId') schemaId: string) {
-        const result = await this.ledgerService.getSchema(schemaId);
-        return result;
-    }
+    // @Get('schema/:schemaId')
+    // @ApiOperation({ summary: 'Get schema by ID' })
+    // async getSchema(@Param('schemaId') schemaId: string) {
+    //     const result = await this.ledgerService.getSchema(schemaId);
+    //     return result;
+    // }
 
 
-    @Get('debug-anoncreds')
-    @ApiOperation({ summary: 'Debug anoncreds API' })
-    async debugAnoncredsApi() {
-        const result = await this.ledgerService.debugAnoncredsApi();
-        return result;
-    }
+    // @Get('debug-anoncreds')
+    // @ApiOperation({ summary: 'Debug anoncreds API' })
+    // async debugAnoncredsApi() {
+    //     const result = await this.ledgerService.debugAnoncredsApi();
+    //     return result;
+    // }
 
 }

@@ -266,50 +266,50 @@ export class LedgerService {
         }
     }
 
-    async getSchema(schemaId: string): Promise<unknown> {
-        try {
-            const agent = this.acmeService.getAgent();
-            const schema = await agent.modules.anoncreds.getSchema(schemaId);
+    // async getSchema(schemaId: string): Promise<unknown> {
+    //     try {
+    //         const agent = this.acmeService.getAgent();
+    //         const schema = await agent.modules.anoncreds.getSchema(schemaId);
             
-            return {
-                statusCode: HttpStatus.OK,
-                message: 'Schema retrieved successfully',
-                data: schema,
-            };
-        } catch (error) {
-            throw new BadRequestException('Error retrieving schema: ' + error.message);
-        }
-    }
+    //         return {
+    //             statusCode: HttpStatus.OK,
+    //             message: 'Schema retrieved successfully',
+    //             data: schema,
+    //         };
+    //     } catch (error) {
+    //         throw new BadRequestException('Error retrieving schema: ' + error.message);
+    //     }
+    // }
 
-    async debugAnoncredsApi(): Promise<unknown> {
-        try {
-            const agent = this.acmeService.getAgent();
+    // async debugAnoncredsApi(): Promise<unknown> {
+    //     try {
+    //         const agent = this.acmeService.getAgent();
             
-            // Check what methods are available
-            const anoncredsModule = agent.modules.anoncreds;
-            const methods = Object.getOwnPropertyNames(Object.getPrototypeOf(anoncredsModule))
-                .filter(method => method !== 'constructor' && typeof anoncredsModule[method] === 'function');
+    //         // Check what methods are available
+    //         const anoncredsModule = agent.modules.anoncreds;
+    //         const methods = Object.getOwnPropertyNames(Object.getPrototypeOf(anoncredsModule))
+    //             .filter(method => method !== 'constructor' && typeof anoncredsModule[method] === 'function');
             
-            this.logger.log('Available anoncreds methods:', methods);
+    //         this.logger.log('Available anoncreds methods:', methods);
             
-            // Also check the registerCredentialDefinition function
-            if (anoncredsModule.registerCredentialDefinition) {
-                this.logger.log('registerCredentialDefinition function exists');
-                this.logger.log('Function length (expected parameters):', anoncredsModule.registerCredentialDefinition.length);
-            }
+    //         // Also check the registerCredentialDefinition function
+    //         if (anoncredsModule.registerCredentialDefinition) {
+    //             this.logger.log('registerCredentialDefinition function exists');
+    //             this.logger.log('Function length (expected parameters):', anoncredsModule.registerCredentialDefinition.length);
+    //         }
             
-            return {
-                statusCode: HttpStatus.OK,
-                message: 'Anoncreds API debug info',
-                data: {
-                    methods,
-                    hasRegisterCredentialDefinition: !!anoncredsModule.registerCredentialDefinition,
-                },
-            };
-        } catch (error) {
-            throw new InternalServerErrorException('Error debugging anoncreds API: ' + error.message);
-        }
-    }
+    //         return {
+    //             statusCode: HttpStatus.OK,
+    //             message: 'Anoncreds API debug info',
+    //             data: {
+    //                 methods,
+    //                 hasRegisterCredentialDefinition: !!anoncredsModule.registerCredentialDefinition,
+    //             },
+    //         };
+    //     } catch (error) {
+    //         throw new InternalServerErrorException('Error debugging anoncreds API: ' + error.message);
+    //     }
+    // }
 
 
 
