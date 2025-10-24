@@ -113,59 +113,103 @@ export class IssuanceService {
 
   // Get credential records for debugging
   async getCredentialRecords(agentType: 'acme' | 'bob') {
-    try {
-      const agent = agentType === 'acme' ? this.acmeService.getAgent() : this.bobService.getAgent();
-      
-      const credentials = await agent.credentials.getAll();
-      
-      return {
-        statusCode: HttpStatus.OK,
-        message: 'Credential records retrieved successfully',
-        data: credentials.map(cred => ({
-          id: cred.id,
-          state: cred.state,
-          connectionId: cred.connectionId,
-          protocolVersion: cred.protocolVersion,
-          createdAt: cred.createdAt,
-        })),
-      };
-    } catch (error) {
-      this.logger.error('Error getting credential records:', error);
-      throw new InternalServerErrorException('Failed to get credential records: ' + error.message);
+      try {
+        let agent:any;
+
+        if (agentType === 'acme') {
+          agent = this.acmeService.getAgent();
+        } else if (agentType === 'bob') {
+          // Check if Bob agent is initialized before trying to get it
+          try {
+            agent = this.bobService.getAgent();
+          } catch (error) {
+            if (error instanceof NotFoundException) {
+              this.logger.log('Bob agent not initialized, returning empty credentials array');
+              return {
+                statusCode: HttpStatus.OK,
+                message: 'Bob agent not initialized',
+                data: [],
+              };
+            }
+            throw error;
+          }
+        } else {
+          throw new BadRequestException('Invalid agent type');
+        }
+        
+        const credentials = await agent.credentials.getAll();
+        
+        return {
+          statusCode: HttpStatus.OK,
+          message: 'Credential records retrieved successfully',
+          data: credentials.map(cred => ({
+            id: cred.id,
+            state: cred.state,
+            connectionId: cred.connectionId,
+            protocolVersion: cred.protocolVersion,
+            createdAt: cred.createdAt,
+          })),
+        };
+      } catch (error) {
+        this.logger.error('Error getting credential records:', error);
+        
+        // If Bob agent is not initialized, return empty array instead of error
+        if (error instanceof NotFoundException && error.message.includes('Bob agent')) {
+          return {
+            statusCode: HttpStatus.OK,
+            message: 'Bob agent not initialized',
+            data: [],
+          };
+        }
+        
+        throw new InternalServerErrorException('Failed to get credential records: ' + error.message);
+      }
     }
-  }
+
 
 
 
       // Get all credential records for Bob agent
       async getBobCredentialRecords(): Promise<unknown> {
-          try {
-              const agent = this.bobService.getAgent();
-              const credentials = await agent.credentials.getAll();
-              
-              // Filter to show only relevant states for debugging
-              const relevantCredentials = credentials.filter(cred => 
-                  cred.state === 'offer-received' || 
-                  cred.state === 'request-sent' || 
-                  cred.state === 'credential-received'
-              );
+        try {
+          // Check if Bob agent is initialized
+          const agent = this.bobService.getAgent();
+          
+          const credentials = await agent.credentials.getAll();
+          
+          // Filter to show only relevant states for debugging
+          const relevantCredentials = credentials.filter(cred => 
+              cred.state === 'offer-received' || 
+              cred.state === 'request-sent' || 
+              cred.state === 'credential-received'
+          );
 
-              return {
-                  statusCode: HttpStatus.OK,
-                  message: 'Bob credential records retrieved successfully',
-                  data: relevantCredentials.map(cred => ({
-                      id: cred.id,
-                      state: cred.state,
-                      connectionId: cred.connectionId,
-                      protocolVersion: cred.protocolVersion,
-                      createdAt: cred.createdAt,
-                      threadId: cred.threadId,
-                  })),
-              };
-          } catch (error) {
-              this.logger.error('Error getting Bob credential records:', error);
-              throw new InternalServerErrorException('Failed to get Bob credential records: ' + error.message);
+          return {
+              statusCode: HttpStatus.OK,
+              message: 'Bob credential records retrieved successfully',
+              data: relevantCredentials.map(cred => ({
+                  id: cred.id,
+                  state: cred.state,
+                  connectionId: cred.connectionId,
+                  protocolVersion: cred.protocolVersion,
+                  createdAt: cred.createdAt,
+                  threadId: cred.threadId,
+              })),
+          };
+        } catch (error) {
+          this.logger.error('Error getting Bob credential records:', error);
+          
+          // If Bob agent is not initialized, return empty array
+          if (error instanceof NotFoundException && error.message.includes('Bob agent')) {
+            return {
+              statusCode: HttpStatus.OK,
+              message: 'Bob agent not initialized',
+              data: [],
+            };
           }
+          
+          throw new InternalServerErrorException('Failed to get Bob credential records: ' + error.message);
+        }
       }
 
       // Accept credential using Bob's credential record ID

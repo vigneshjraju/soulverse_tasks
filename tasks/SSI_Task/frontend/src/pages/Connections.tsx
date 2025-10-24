@@ -1,8 +1,9 @@
+// pages/Connections.tsx
 import React, { useState } from 'react';
 import StatusBadge from '../components/ui/StatusBadge';
 import Button from '../components/ui/Button';
 import { Initialization } from '../components/Initialization';
-import { Plus, RefreshCw, Users, Copy, CheckCircle, Link, Trash2, Eye, MessageSquare } from 'lucide-react';
+import { Plus, RefreshCw, Users, Copy, CheckCircle, Link, Eye, MessageSquare, X } from 'lucide-react';
 import { useSSIContext } from '../hooks/SSIContext';
 
 export const Connections: React.FC = () => {
@@ -11,12 +12,13 @@ export const Connections: React.FC = () => {
     agentState,
     acmeAgent,
     bobAgent,
+    currentInvitation,
     initializingAcme,
     initializingBob,
     creatingInvitation, 
     loadingConnections,
     createInvitation, 
-    invitationData,
+    clearCurrentInvitation,
     initializeAcme,
     initializeBob,
     refreshConnections,
@@ -32,17 +34,14 @@ export const Connections: React.FC = () => {
   const handleCreateInvitation = async () => {
     try {
       const result = await createInvitation();
-      console.log('Invitation created:', result);
+      console.log('Full invitation result:', result);
       
-      if (result?.data?.invitationUrl) {
-        navigator.clipboard.writeText(result.data.invitationUrl);
-        setCopiedInvitation(result.data.invitationUrl);
-        setTimeout(() => setCopiedInvitation(null), 3000);
-      }
-      
+      // The invitation is now automatically stored in currentInvitation state
       await refreshConnections();
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Failed to create invitation:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Failed to create invitation';
+      alert(`Failed to create invitation: ${errorMessage}`);
     }
   };
 
@@ -50,12 +49,23 @@ export const Connections: React.FC = () => {
     if (!invitationUrl.trim()) return;
     
     try {
-      await receiveInvitation(invitationUrl);
+      const cleanUrl = invitationUrl.trim().replace(/[{}"']/g, '');
+      
+      if (!cleanUrl.startsWith('http://localhost:3002')) {
+        alert('Invalid invitation URL. Please make sure it starts with http://localhost:3002');
+        return;
+      }
+      
+      await receiveInvitation(cleanUrl);
       setInvitationUrl('');
       setShowInvitationInput(false);
       await refreshConnections();
-    } catch (error) {
+      
+      alert('Invitation received successfully!');
+    } catch (error: unknown) {
       console.error('Failed to receive invitation:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Failed to receive invitation';
+      alert(`Failed to receive invitation: ${errorMessage}`);
     }
   };
 
@@ -64,6 +74,9 @@ export const Connections: React.FC = () => {
     if (type === 'connection') {
       setCopiedConnectionId(text);
       setTimeout(() => setCopiedConnectionId(null), 2000);
+    } else {
+      setCopiedInvitation(text);
+      setTimeout(() => setCopiedInvitation(null), 3000);
     }
   };
 
@@ -77,7 +90,7 @@ export const Connections: React.FC = () => {
         return { color: 'yellow', text: 'Pending', icon: Clock };
       case 'error':
       case 'failed':
-        return { color: 'red', text: 'Failed', icon: XCircle };
+        return { color: 'red', text: 'Failed', icon: X };
       default:
         return { color: 'gray', text: state, icon: Users };
     }
@@ -140,6 +153,50 @@ export const Connections: React.FC = () => {
         </div>
       </div>
 
+      {/* Invitation Display Section */}
+      {currentInvitation && (
+        <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              <Link className="h-5 w-5 text-green-500 mr-3" />
+              <div>
+                <p className="text-sm font-medium text-green-800">New Invitation Created</p>
+                <p className="text-sm text-green-600 mt-1 font-mono text-xs break-all">
+                  {currentInvitation.invitationUrl}
+                </p>
+                <p className="text-xs text-green-500 mt-1">
+                  OOB ID: {currentInvitation.oobId}
+                </p>
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={() => copyToClipboard(currentInvitation.invitationUrl, 'invitation')}
+                className="flex items-center gap-2"
+              >
+                {copiedInvitation === currentInvitation.invitationUrl ? (
+                  <CheckCircle className="w-4 h-4" />
+                ) : (
+                  <Copy className="w-4 h-4" />
+                )}
+                Copy URL
+              </Button>
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={clearCurrentInvitation}
+                className="flex items-center gap-2"
+              >
+                <X className="w-4 h-4" />
+                Clear
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Receive Invitation Section */}
       {canReceiveInvitations && (
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
@@ -188,42 +245,6 @@ export const Connections: React.FC = () => {
               </p>
             </div>
           )}
-        </div>
-      )}
-
-      {/* Invitation URL Display */}
-      {invitationData?.data?.invitationUrl && (
-        <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <Link className="h-5 w-5 text-green-500 mr-3" />
-              <div>
-                <p className="text-sm font-medium text-green-800">New Invitation Created</p>
-                <p className="text-sm text-green-600 mt-1 truncate max-w-2xl">
-                  {invitationData.data.invitationUrl}
-                </p>
-              </div>
-            </div>
-            <div className="flex gap-2">
-              <Button
-                variant="secondary"
-                size="sm"
-                onClick={() => {
-                  navigator.clipboard.writeText(invitationData.data.invitationUrl);
-                  setCopiedInvitation(invitationData.data.invitationUrl);
-                  setTimeout(() => setCopiedInvitation(null), 3000);
-                }}
-                className="flex items-center gap-2"
-              >
-                {copiedInvitation === invitationData.data.invitationUrl ? (
-                  <CheckCircle className="w-4 h-4" />
-                ) : (
-                  <Copy className="w-4 h-4" />
-                )}
-                Copy URL
-              </Button>
-            </div>
-          </div>
         </div>
       )}
 
@@ -480,4 +501,4 @@ export const Connections: React.FC = () => {
 };
 
 // Import missing icons
-import { Clock, XCircle } from 'lucide-react';
+import { Clock } from 'lucide-react';

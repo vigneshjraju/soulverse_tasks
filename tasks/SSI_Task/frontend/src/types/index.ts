@@ -20,6 +20,7 @@ export interface Credential {
 }
 
 
+
 export interface ProofRecord {
   id: string;
   state: string;
@@ -30,23 +31,27 @@ export interface ProofRecord {
 }
 
 
+export interface DID {
+  did: string;
+  method: string;
+  seed?: string;
+  createdAt: string;
+}
+
 export interface Schema {
   schemaId: string;
-  schema: {
-    attrNames: string[];
-    name: string;
-    version: string;
-    issuerId: string;
-  };
+  name: string;
+  version: string;
+  issuerId: string;
+  createdAt: string;
 }
 
 export interface CredentialDefinition {
   credentialDefinitionId: string;
-  credentialDefinition: {
-    schemaId: string;
-    tag: string;
-    issuerId: string;
-  };
+  schemaId: string;
+  tag: string;
+  issuerId: string;
+  createdAt: string;
 }
 
 export interface AgentState {

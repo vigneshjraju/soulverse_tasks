@@ -1,4 +1,3 @@
-// components/Initialization.tsx
 import React from 'react';
 import Button from './ui/Button';
 import { ShieldCheck, RefreshCw, CheckCircle, XCircle, Users } from 'lucide-react';

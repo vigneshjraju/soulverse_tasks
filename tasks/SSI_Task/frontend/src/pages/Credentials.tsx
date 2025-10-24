@@ -13,9 +13,16 @@ export const Credentials: React.FC = () => {
   } = useSSI();
 
   const handleViewCredential = (credential: Credential) => {
-    // In a real app, this would open a modal or detailed view
     console.log('View credential:', credential);
     alert(`Credential Details:\nID: ${credential.id}\nState: ${credential.state}\nAttributes: ${JSON.stringify(credential.credentialAttributes, null, 2)}`);
+  };
+
+  const handleExportCredential = (credential: Credential) => {
+    const blob = new Blob([JSON.stringify(credential, null, 2)], { type: 'application/json' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `credential-${credential.id}.json`;
+    link.click();
   };
 
   return (
@@ -91,6 +98,7 @@ export const Credentials: React.FC = () => {
                 </Button>
                 <Button
                   variant="primary"
+                  onClick={() => handleExportCredential(credential)}
                   className="flex-1 flex items-center justify-center gap-2"
                 >
                   <Download className="w-4 h-4" />

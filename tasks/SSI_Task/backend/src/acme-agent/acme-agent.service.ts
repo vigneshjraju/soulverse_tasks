@@ -35,7 +35,7 @@ export class AcmeAgentService {
                 const config: InitConfig = {
                 label: 'demo-agent-acme',
                  walletConfig: {
-                    id: 'mainAcme77',
+                    id: 'mainAcme70',
                     key: 'demoagentacme0000000000000000000',
                 },
                 logger: new ConsoleLogger(LogLevel.debug),

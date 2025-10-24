@@ -26,7 +26,7 @@ export class BobAgentService {
             const config: InitConfig = {
                 label: 'docs-agent-Bob',
                 walletConfig: {
-                    id:'mainBob',
+                    id:'mainBob07',
                     key:'demoagentbob00000000000000000000'
                 },
                 logger: new ConsoleLogger(LogLevel.debug),

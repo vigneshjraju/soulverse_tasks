@@ -1,17 +1,24 @@
-import React, { useState, useEffect } from 'react';
+// src/pages/issuance.tsx
+import React, { useEffect, useState } from 'react';
 import { useSSI } from '../hooks/useSSI';
 import Button from '../components/ui/Button';
-import { Send, RefreshCw } from 'lucide-react'; //Plus
+import { Send, RefreshCw } from 'lucide-react';
 import { apiService } from '../services/api';
-// import type { Connection } from '../types';
 
 export const Issuance: React.FC = () => {
-  const { connections, refreshConnections } = useSSI();
+  const {
+    connections,
+    credentialDefinitions,
+    refreshConnections,
+    acmeAgent,
+  } = useSSI();
+
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState(1);
+
   const [formData, setFormData] = useState({
     connectionId: '',
-    credentialDefinitionId: 'did:indy:bcovrin:test:QZbPJxNuvDWMHqsqCMFMLs/anoncreds/v0/CLAIM_DEF/2934900/CDBLogin',
+    credentialDefinitionId: '',
     attributes: [
       { name: 'Name', value: '' },
       { name: 'Email ID', value: '' },
@@ -26,34 +33,30 @@ export const Issuance: React.FC = () => {
   }, []);
 
   const handleInputChange = (index: number, value: string) => {
-    const newAttributes = [...formData.attributes];
-    newAttributes[index].value = value;
-    setFormData({ ...formData, attributes: newAttributes });
+    const updated = [...formData.attributes];
+    updated[index].value = value;
+    setFormData(prev => ({ ...prev, attributes: updated }));
   };
 
   const handleIssueCredential = async () => {
     setLoading(true);
     try {
-      await apiService.offerCredential({
-        protocolVersion: 'v2',
+      const data = {
         connectionId: formData.connectionId,
         credentialDefinitionId: formData.credentialDefinitionId,
         attributes: formData.attributes.filter(attr => attr.value.trim() !== ''),
-      });
-      
-      alert('Credential offered successfully!');
+        protocolVersion: 'v2' as const,
+      };
+
+      await apiService.offerCredential(data);
+      alert('Credential offered successfully');
       setStep(1);
-      setFormData({
+      setFormData(prev => ({
+        ...prev,
         connectionId: '',
-        credentialDefinitionId: 'did:indy:bcovrin:test:QZbPJxNuvDWMHqsqCMFMLs/anoncreds/v0/CLAIM_DEF/2934900/CDBLogin',
-        attributes: [
-          { name: 'Name', value: '' },
-          { name: 'Email ID', value: '' },
-          { name: 'Organisation Name', value: '' },
-          { name: 'Organisation ID', value: '' },
-          { name: 'Role', value: '' },
-        ],
-      });
+        credentialDefinitionId: '',
+        attributes: prev.attributes.map(attr => ({ ...attr, value: '' })),
+      }));
     } catch (error: any) {
       alert(`Failed to issue credential: ${error.message}`);
     } finally {
@@ -61,38 +64,43 @@ export const Issuance: React.FC = () => {
     }
   };
 
+
+  
   const canProceed = () => {
-    switch (step) {
-      case 1:
-        return formData.connectionId !== '';
-      case 2:
-        return formData.attributes.some(attr => attr.value.trim() !== '');
-      default:
-        return true;
-    }
+    if (step === 1) return formData.connectionId && formData.credentialDefinitionId;
+    if (step === 2) return formData.attributes.some(attr => attr.value.trim().length > 0);
+    return true;
   };
+
+  if (!acmeAgent.isInitialized) {
+    return (
+      <div className="text-center py-12">
+        <h3 className="text-lg font-medium text-gray-900">Acme Agent Not Initialized</h3>
+        <p className="mt-2 text-sm text-gray-500">
+          Please initialize the Acme agent to proceed.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
+      {/* Header */}
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Issue Credentials</h1>
-          <p className="mt-1 text-sm text-gray-500">Issue verifiable credentials to connections</p>
+          <p className="text-sm text-gray-500">Issue verifiable credentials</p>
         </div>
-        <Button 
-          variant="secondary" 
-          onClick={refreshConnections}
-          className="flex items-center gap-2"
-        >
-          <RefreshCw className="w-4 h-4" />
-          Refresh Connections
+        <Button onClick={refreshConnections} variant="secondary">
+          <RefreshCw className="w-4 h-4 mr-2" />
+          Refresh
         </Button>
       </div>
 
       {/* Progress Steps */}
       <div className="bg-white shadow rounded-lg p-6">
         <div className="flex items-center justify-between max-w-2xl mx-auto">
-          {[1, 2, 3].map((stepNumber) => (
+          {[1, 2, 3].map(stepNumber => (
             <div key={stepNumber} className="flex items-center">
               <div
                 className={`flex items-center justify-center w-8 h-8 rounded-full ${
@@ -120,39 +128,48 @@ export const Issuance: React.FC = () => {
         </div>
       </div>
 
-      {/* Step 1: Select Connection */}
+      {/* Step 1: Select Connection & Credential Definition */}
       {step === 1 && (
-        <div className="bg-white shadow rounded-lg p-6">
-          <h3 className="text-lg font-medium text-gray-900 mb-4">Select Connection</h3>
+        <div className="bg-white shadow rounded-lg p-6 space-y-6">
+          <h3 className="text-lg font-medium text-gray-900">Select Connection</h3>
           <div className="space-y-4">
-            {connections.filter(conn => conn.state === 'complete').map((connection) => (
+            {connections.filter(c => c.state === 'complete').map(conn => (
               <div
-                key={connection.id}
-                className={`border rounded-lg p-4 cursor-pointer transition-colors ${
-                  formData.connectionId === connection.id
+                key={conn.id}
+                className={`border p-4 rounded-lg cursor-pointer ${
+                  formData.connectionId === conn.id
                     ? 'border-indigo-500 bg-indigo-50'
-                    : 'border-gray-200 hover:border-indigo-300'
+                    : 'hover:border-indigo-300 border-gray-200'
                 }`}
-                onClick={() => setFormData({ ...formData, connectionId: connection.id })}
+                onClick={() => setFormData({ ...formData, connectionId: conn.id })}
               >
-                <div className="flex items-center justify-between">
+                <div className="flex justify-between items-center">
                   <div>
-                    <p className="font-medium text-gray-900">
-                      {connection.theirLabel || 'Unknown Agent'}
-                    </p>
-                    <p className="text-sm text-gray-500 truncate">{connection.id}</p>
+                    <p className="font-medium">{conn.theirLabel || 'Unknown Agent'}</p>
+                    <p className="text-sm text-gray-500 truncate">{conn.id}</p>
                   </div>
-                  {formData.connectionId === connection.id && (
-                    <div className="w-3 h-3 rounded-full bg-indigo-600" />
+                  {formData.connectionId === conn.id && (
+                    <div className="w-3 h-3 bg-indigo-600 rounded-full" />
                   )}
                 </div>
               </div>
             ))}
-            {connections.filter(conn => conn.state === 'complete').length === 0 && (
-              <p className="text-center text-gray-500 py-4">
-                No active connections available. Create a connection first.
-              </p>
-            )}
+          </div>
+
+          <div className="mt-6">
+            <label className="block text-sm font-medium text-gray-700 mb-2">Select Credential Definition</label>
+            <select
+              className="w-full px-3 py-2 border border-gray-300 rounded-md"
+              value={formData.credentialDefinitionId}
+              onChange={(e) => setFormData({ ...formData, credentialDefinitionId: e.target.value })}
+            >
+              <option value="">-- Select Credential Definition --</option>
+              {credentialDefinitions.map(def => (
+                <option key={def.credentialDefinitionId} value={def.credentialDefinitionId}>
+                  {def.tag} ({def.credentialDefinitionId.slice(0, 25)}...)
+                </option>
+              ))}
+            </select>
           </div>
         </div>
       )}
@@ -162,17 +179,15 @@ export const Issuance: React.FC = () => {
         <div className="bg-white shadow rounded-lg p-6">
           <h3 className="text-lg font-medium text-gray-900 mb-4">Enter Credential Attributes</h3>
           <div className="space-y-4">
-            {formData.attributes.map((attribute, index) => (
-              <div key={attribute.name}>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  {attribute.name}
-                </label>
+            {formData.attributes.map((attr, index) => (
+              <div key={attr.name}>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{attr.name}</label>
                 <input
                   type="text"
-                  value={attribute.value}
+                  value={attr.value}
                   onChange={(e) => handleInputChange(index, e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                  placeholder={`Enter ${attribute.name.toLowerCase()}`}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                  placeholder={`Enter ${attr.name.toLowerCase()}`}
                 />
               </div>
             ))}
@@ -182,52 +197,40 @@ export const Issuance: React.FC = () => {
 
       {/* Step 3: Review */}
       {step === 3 && (
-        <div className="bg-white shadow rounded-lg p-6">
-          <h3 className="text-lg font-medium text-gray-900 mb-4">Review Credential</h3>
-          <div className="space-y-3">
-            <div>
-              <span className="font-medium text-gray-700">Connection:</span>{' '}
-              <span className="text-gray-600">
-                {connections.find(c => c.id === formData.connectionId)?.theirLabel || 'Unknown'}
-              </span>
+        <div className="bg-white shadow rounded-lg p-6 space-y-3">
+          <h3 className="text-lg font-medium">Review Credential</h3>
+          <div>
+            <span className="font-medium">Connection:</span>{' '}
+            {connections.find(c => c.id === formData.connectionId)?.theirLabel || 'Unknown'}
+          </div>
+          <div>
+            <span className="font-medium">Credential Definition:</span>
+            <div className="text-sm text-gray-600">
+              {formData.credentialDefinitionId.slice(0, 60)}...
             </div>
-            <div>
-              <span className="font-medium text-gray-700">Credential Definition:</span>{' '}
-              <span className="text-gray-600 text-sm">
-                {formData.credentialDefinitionId.substring(0, 50)}...
-              </span>
-            </div>
-            <div>
-              <span className="font-medium text-gray-700">Attributes:</span>
-              <ul className="mt-1 space-y-1">
-                {formData.attributes
-                  .filter(attr => attr.value.trim() !== '')
-                  .map((attr, index) => (
-                    <li key={index} className="text-gray-600">
-                      {attr.name}: {attr.value}
-                    </li>
-                  ))}
-              </ul>
-            </div>
+          </div>
+          <div>
+            <span className="font-medium">Attributes:</span>
+            <ul className="text-gray-600 list-disc ml-6">
+              {formData.attributes
+                .filter(attr => attr.value.trim() !== '')
+                .map(attr => (
+                  <li key={attr.name}>
+                    {attr.name}: {attr.value}
+                  </li>
+                ))}
+            </ul>
           </div>
         </div>
       )}
 
       {/* Navigation Buttons */}
       <div className="flex justify-between">
-        <Button
-          variant="secondary"
-          onClick={() => setStep(step - 1)}
-          disabled={step === 1}
-        >
+        <Button variant="secondary" onClick={() => setStep(step - 1)} disabled={step === 1}>
           Previous
         </Button>
-        
         {step < 3 ? (
-          <Button
-            onClick={() => setStep(step + 1)}
-            disabled={!canProceed()}
-          >
+          <Button onClick={() => setStep(step + 1)} disabled={!canProceed()}>
             Next
           </Button>
         ) : (
