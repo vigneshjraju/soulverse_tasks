@@ -152,13 +152,13 @@ export const Verification: React.FC = () => {
             variant={agentView === 'acme' ? 'primary' : 'secondary'}
             onClick={() => setAgentView('acme')}
           >
-            ▶️ Acme
+            Acme
           </Button>
           <Button
             variant={agentView === 'bob' ? 'primary' : 'secondary'}
             onClick={() => setAgentView('bob')}
           >
-            🧑‍💼 Bob
+            Bob
           </Button>
           <Button onClick={fetchProofRecords} variant="secondary">
             <RefreshCw className="w-4 h-4 mr-1" />
