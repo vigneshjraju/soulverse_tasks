@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query,Param } from '@nestjs/common';
 import { VerificationService } from './verification.service';
 import {
   getproofRecordsbyThreadDto,
@@ -63,6 +63,12 @@ export class VerificationController {
   })
   async acceptRequest(@Body() Id: proofRequestIdDto) {
     return this.verificationService.acceptRequestandPresentproof(Id);
+  }
+
+  @Get('proof-record/:id')
+  @ApiOperation({ summary: 'Get proof record by ID' })
+  async getProofById(@Param('id') id: string) {
+    return this.verificationService.getProofById(id);
   }
 
   @Post('verify-proof')

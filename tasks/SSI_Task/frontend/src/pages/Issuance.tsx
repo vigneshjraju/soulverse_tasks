@@ -1,6 +1,5 @@
-// src/pages/issuance.tsx
 import React, { useEffect, useState } from 'react';
-import { useSSI } from '../hooks/useSSI';
+import { useSSIContext } from '../hooks/SSIContext';
 import Button from '../components/ui/Button';
 import { Send, RefreshCw } from 'lucide-react';
 import { apiService } from '../services/api';
@@ -8,10 +7,9 @@ import { apiService } from '../services/api';
 export const Issuance: React.FC = () => {
   const {
     connections,
-    credentialDefinitions,
     refreshConnections,
     acmeAgent,
-  } = useSSI();
+  } = useSSIContext();
 
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState(1);
@@ -28,6 +26,11 @@ export const Issuance: React.FC = () => {
     ],
   });
 
+  // ✅ Correct filter for completed connections
+  const activeConnections = connections.filter(conn =>
+    ['completed', 'complete', 'responded'].includes(conn.state)
+  );
+
   useEffect(() => {
     refreshConnections();
   }, []);
@@ -35,7 +38,10 @@ export const Issuance: React.FC = () => {
   const handleInputChange = (index: number, value: string) => {
     const updated = [...formData.attributes];
     updated[index].value = value;
-    setFormData(prev => ({ ...prev, attributes: updated }));
+    setFormData((prevData) => ({
+      ...prevData,
+      attributes: updated,
+    }));
   };
 
   const handleIssueCredential = async () => {
@@ -49,26 +55,27 @@ export const Issuance: React.FC = () => {
       };
 
       await apiService.offerCredential(data);
-      alert('Credential offered successfully');
+      alert('✅ Credential offered successfully!');
+      
       setStep(1);
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
         connectionId: '',
         credentialDefinitionId: '',
         attributes: prev.attributes.map(attr => ({ ...attr, value: '' })),
       }));
     } catch (error: any) {
-      alert(`Failed to issue credential: ${error.message}`);
+      alert(`❌ Failed to issue credential: ${error.message}`);
     } finally {
       setLoading(false);
     }
   };
 
-
-  
   const canProceed = () => {
-    if (step === 1) return formData.connectionId && formData.credentialDefinitionId;
-    if (step === 2) return formData.attributes.some(attr => attr.value.trim().length > 0);
+    if (step === 1)
+      return formData.connectionId && formData.credentialDefinitionId;
+    else if (step === 2)
+      return formData.attributes.some(attr => attr.value.trim() !== '');
     return true;
   };
 
@@ -85,7 +92,7 @@ export const Issuance: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
+      {/* Page Header */}
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Issue Credentials</h1>
@@ -97,10 +104,10 @@ export const Issuance: React.FC = () => {
         </Button>
       </div>
 
-      {/* Progress Steps */}
+      {/* Stepper */}
       <div className="bg-white shadow rounded-lg p-6">
         <div className="flex items-center justify-between max-w-2xl mx-auto">
-          {[1, 2, 3].map(stepNumber => (
+          {[1, 2, 3].map((stepNumber) => (
             <div key={stepNumber} className="flex items-center">
               <div
                 className={`flex items-center justify-center w-8 h-8 rounded-full ${
@@ -122,54 +129,59 @@ export const Issuance: React.FC = () => {
           ))}
         </div>
         <div className="flex justify-between max-w-2xl mx-auto mt-2 text-sm text-gray-500">
-          <span>Select Connection</span>
+          <span>Select Connection & Credential Def ID</span>
           <span>Enter Attributes</span>
           <span>Review & Issue</span>
         </div>
       </div>
 
-      {/* Step 1: Select Connection & Credential Definition */}
+      {/* Step 1: Select Connection + Credential Definition */}
       {step === 1 && (
         <div className="bg-white shadow rounded-lg p-6 space-y-6">
-          <h3 className="text-lg font-medium text-gray-900">Select Connection</h3>
+          <h3 className="text-lg font-medium text-gray-900">Step 1: Select Connection</h3>
           <div className="space-y-4">
-            {connections.filter(c => c.state === 'complete').map(conn => (
+            {activeConnections.map((connection) => (
               <div
-                key={conn.id}
-                className={`border p-4 rounded-lg cursor-pointer ${
-                  formData.connectionId === conn.id
+                key={connection.id}
+                className={`border rounded-lg p-4 cursor-pointer transition-colors ${
+                  formData.connectionId === connection.id
                     ? 'border-indigo-500 bg-indigo-50'
-                    : 'hover:border-indigo-300 border-gray-200'
+                    : 'border-gray-200 hover:border-indigo-300'
                 }`}
-                onClick={() => setFormData({ ...formData, connectionId: conn.id })}
+                onClick={() => setFormData({ ...formData, connectionId: connection.id })}
               >
-                <div className="flex justify-between items-center">
+                <div className="flex items-center justify-between">
                   <div>
-                    <p className="font-medium">{conn.theirLabel || 'Unknown Agent'}</p>
-                    <p className="text-sm text-gray-500 truncate">{conn.id}</p>
+                    <p className="font-medium text-gray-900">
+                      {connection.theirLabel || 'Unknown Agent'}
+                    </p>
+                    <p className="text-sm text-gray-500 truncate">{connection.id}</p>
                   </div>
-                  {formData.connectionId === conn.id && (
-                    <div className="w-3 h-3 bg-indigo-600 rounded-full" />
+                  {formData.connectionId === connection.id && (
+                    <div className="w-3 h-3 rounded-full bg-indigo-600" />
                   )}
                 </div>
               </div>
             ))}
+
+            {activeConnections.length === 0 && (
+              <p className="text-center text-red-500 py-4">
+                ⚠️ No active connections found. Please create a connection first.
+              </p>
+            )}
           </div>
 
-          <div className="mt-6">
-            <label className="block text-sm font-medium text-gray-700 mb-2">Select Credential Definition</label>
-            <select
-              className="w-full px-3 py-2 border border-gray-300 rounded-md"
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Credential Definition ID
+            </label>
+            <input
+              type="text"
               value={formData.credentialDefinitionId}
               onChange={(e) => setFormData({ ...formData, credentialDefinitionId: e.target.value })}
-            >
-              <option value="">-- Select Credential Definition --</option>
-              {credentialDefinitions.map(def => (
-                <option key={def.credentialDefinitionId} value={def.credentialDefinitionId}>
-                  {def.tag} ({def.credentialDefinitionId.slice(0, 25)}...)
-                </option>
-              ))}
-            </select>
+              placeholder="Paste credentialDefinitionId here"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
           </div>
         </div>
       )}
@@ -177,16 +189,18 @@ export const Issuance: React.FC = () => {
       {/* Step 2: Enter Attributes */}
       {step === 2 && (
         <div className="bg-white shadow rounded-lg p-6">
-          <h3 className="text-lg font-medium text-gray-900 mb-4">Enter Credential Attributes</h3>
+          <h3 className="text-lg font-medium text-gray-900 mb-4">Step 2: Enter Attributes</h3>
           <div className="space-y-4">
             {formData.attributes.map((attr, index) => (
               <div key={attr.name}>
-                <label className="block text-sm font-medium text-gray-700 mb-1">{attr.name}</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  {attr.name}
+                </label>
                 <input
                   type="text"
                   value={attr.value}
                   onChange={(e) => handleInputChange(index, e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   placeholder={`Enter ${attr.name.toLowerCase()}`}
                 />
               </div>
@@ -197,38 +211,48 @@ export const Issuance: React.FC = () => {
 
       {/* Step 3: Review */}
       {step === 3 && (
-        <div className="bg-white shadow rounded-lg p-6 space-y-3">
-          <h3 className="text-lg font-medium">Review Credential</h3>
-          <div>
-            <span className="font-medium">Connection:</span>{' '}
-            {connections.find(c => c.id === formData.connectionId)?.theirLabel || 'Unknown'}
-          </div>
-          <div>
-            <span className="font-medium">Credential Definition:</span>
-            <div className="text-sm text-gray-600">
-              {formData.credentialDefinitionId.slice(0, 60)}...
+        <div className="bg-white shadow rounded-lg p-6">
+          <h3 className="text-lg font-medium text-gray-900 mb-4">Step 3: Review Credential</h3>
+          <div className="space-y-3">
+            <div>
+              <span className="font-medium text-gray-700">Connection:</span>{' '}
+              <span className="text-gray-600">
+                {activeConnections.find(c => c.id === formData.connectionId)?.theirLabel ||
+                  'Unknown'}
+              </span>
             </div>
-          </div>
-          <div>
-            <span className="font-medium">Attributes:</span>
-            <ul className="text-gray-600 list-disc ml-6">
-              {formData.attributes
-                .filter(attr => attr.value.trim() !== '')
-                .map(attr => (
-                  <li key={attr.name}>
-                    {attr.name}: {attr.value}
-                  </li>
-                ))}
-            </ul>
+            <div>
+              <span className="font-medium text-gray-700">Credential Definition ID:</span>
+              <div className="text-sm text-gray-600">
+                {formData.credentialDefinitionId || '(none)'}
+              </div>
+            </div>
+            <div>
+              <span className="font-medium text-gray-700">Attributes:</span>
+              <ul className="mt-1 space-y-1 text-gray-700 list-disc ml-6">
+                {formData.attributes
+                  .filter(attr => attr.value.trim() !== '')
+                  .map((attr, index) => (
+                    <li key={index}>
+                      {attr.name}: {attr.value}
+                    </li>
+                  ))}
+              </ul>
+            </div>
           </div>
         </div>
       )}
 
       {/* Navigation Buttons */}
       <div className="flex justify-between">
-        <Button variant="secondary" onClick={() => setStep(step - 1)} disabled={step === 1}>
+        <Button
+          variant="secondary"
+          onClick={() => setStep(step - 1)}
+          disabled={step === 1}
+        >
           Previous
         </Button>
+        
         {step < 3 ? (
           <Button onClick={() => setStep(step + 1)} disabled={!canProceed()}>
             Next

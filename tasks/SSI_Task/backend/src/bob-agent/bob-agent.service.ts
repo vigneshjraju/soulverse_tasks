@@ -26,7 +26,7 @@ export class BobAgentService {
             const config: InitConfig = {
                 label: 'docs-agent-Bob',
                 walletConfig: {
-                    id:'mainBob07',
+                    id:'mainBob444',
                     key:'demoagentbob00000000000000000000'
                 },
                 logger: new ConsoleLogger(LogLevel.debug),
@@ -81,7 +81,7 @@ export class BobAgentService {
                                 proofFormats: [new AnonCredsProofFormatService()],
                             })
                         ],
-                        autoAcceptProofs: AutoAcceptProof.ContentApproved,
+                        autoAcceptProofs: AutoAcceptProof.Never,
                     }),
                     
                 }

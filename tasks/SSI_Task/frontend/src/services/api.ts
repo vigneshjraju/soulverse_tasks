@@ -67,7 +67,7 @@ export const apiService = {
   }) => api.post('/issuance/offer-cred', data),
   
   acceptCredential: (credentialRecordId: string) => 
-    api.post('/issuance/accept-cred', { credentialRecordId }),
+    api.post('/issuance/accept-cred-bob', { credentialRecordId }),
   
   // Use issuance endpoints instead of records
   getCredentials: (agent: 'acme' | 'bob') => 
@@ -88,6 +88,9 @@ export const apiService = {
   acceptAndPresentProof: (proofRecordId: string) => 
     api.post('/verification/accept-present-proof', { proofRecordId }),
   
+  getProofById: (proofId: string) =>
+    api.get(`/verification/proof-record/${proofId}`).then(res => res.data),
+
   verifyProof: (proofRecordId: string) => 
     api.post('/verification/verify-proof', { proofRecordId }),
   

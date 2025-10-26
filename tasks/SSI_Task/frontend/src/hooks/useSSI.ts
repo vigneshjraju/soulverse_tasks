@@ -394,31 +394,31 @@ export const useSSI = () => {
   };
 
 
-  const resetState = () => {
-    console.log('Resetting all state...');
-    setConnections([]);
-    setCredentials([]);
-    setProofs([]);
-    setCurrentInvitation(null);
-    setAcmeAgent({ isInitialized: false, label: '', endpoints: [] });
-    setBobAgent({ isInitialized: false, label: '', endpoints: [] });
-    setDids([]);
-    setSchemas([]);
-    setCredentialDefinitions([]);
+  // const resetState = () => {
+  //   console.log('Resetting all state...');
+  //   setConnections([]);
+  //   setCredentials([]);
+  //   setProofs([]);
+  //   setCurrentInvitation(null);
+  //   setAcmeAgent({ isInitialized: false, label: '', endpoints: [] });
+  //   setBobAgent({ isInitialized: false, label: '', endpoints: [] });
+  //   setDids([]);
+  //   setSchemas([]);
+  //   setCredentialDefinitions([]);
 
 
-    localStorage.removeItem('ssi-connections');
-    localStorage.removeItem('ssi-credentials');
-    localStorage.removeItem('ssi-proofs');
-    localStorage.removeItem('ssi-acme-agent');
-    localStorage.removeItem('ssi-bob-agent');
-    localStorage.removeItem('ssi-current-invitation');
-    localStorage.removeItem('ssi-dids');
-    localStorage.removeItem('ssi-schemas');
-    localStorage.removeItem('ssi-credential-definitions');
+  //   localStorage.removeItem('ssi-connections');
+  //   localStorage.removeItem('ssi-credentials');
+  //   localStorage.removeItem('ssi-proofs');
+  //   localStorage.removeItem('ssi-acme-agent');
+  //   localStorage.removeItem('ssi-bob-agent');
+  //   localStorage.removeItem('ssi-current-invitation');
+  //   localStorage.removeItem('ssi-dids');
+  //   localStorage.removeItem('ssi-schemas');
+  //   localStorage.removeItem('ssi-credential-definitions');
 
 
-  };
+  // };
 
   // FIXED: Load initial data from localStorage ONLY, don't call APIs automatically
   useEffect(() => {
@@ -455,15 +455,15 @@ export const useSSI = () => {
 
         if (savedDids) {
           setDids(JSON.parse(savedDids));
-          console.log('✅ Loaded DIDs from localStorage');
+          console.log('Loaded DIDs from localStorage');
         }
         if (savedSchemas) {
           setSchemas(JSON.parse(savedSchemas));
-          console.log('✅ Loaded schemas from localStorage');
+          console.log(' Loaded schemas from localStorage');
         }
         if (savedCredDefs) {
           setCredentialDefinitions(JSON.parse(savedCredDefs));
-          console.log('✅ Loaded credential definitions from localStorage');
+          console.log(' Loaded credential definitions from localStorage');
         }
         
         console.log(' Initial state loaded:', {
@@ -486,6 +486,20 @@ export const useSSI = () => {
   }, []); // Empty dependency array - only run once on mount
 
   return {
+
+    offerCredential: async (data: any) => {
+      const result = await apiService.offerCredential(data);
+      await refreshCredentials();
+      return result;
+    },
+
+    acceptCredential: async (credentialRecordId: string) => {
+      const result = await apiService.acceptCredential(credentialRecordId);
+      await refreshCredentials();
+      return result;
+    },
+
+
     // State
     connections,
     credentials,
@@ -522,7 +536,7 @@ export const useSSI = () => {
     refreshConnections,
     refreshCredentials,
     refreshProofs,
-    resetState,
+    // resetState,
     generateDID,
     registerSchema,
     registerCredentialDefinition,

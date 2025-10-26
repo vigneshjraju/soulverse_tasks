@@ -35,7 +35,7 @@ export class AcmeAgentService {
                 const config: InitConfig = {
                 label: 'demo-agent-acme',
                  walletConfig: {
-                    id: 'mainAcme70',
+                    id: 'mainAcme779',
                     key: 'demoagentacme0000000000000000000',
                 },
                 logger: new ConsoleLogger(LogLevel.debug),
@@ -90,7 +90,9 @@ export class AcmeAgentService {
                                 proofFormats: [new AnonCredsProofFormatService()],
                             })
                         ],
-                        autoAcceptProofs: AutoAcceptProof.ContentApproved,
+                        // autoAcceptProofs: AutoAcceptProof.ContentApproved,
+                        autoAcceptProofs: AutoAcceptProof.Never,
+
                     }),
 
                 },

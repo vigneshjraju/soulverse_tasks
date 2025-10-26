@@ -183,6 +183,33 @@ export class VerificationService {
     }
   }
 
+  async getProofById(proofRecordId: string) {
+  try {
+    const agent = this.acmeService.getAgent();
+    const record = await agent.proofs.getById(proofRecordId);
+
+    const formatData = await agent.proofs.getFormatData(record.id);
+    const anoncredsProof = (formatData?.presentation as any)?.anoncreds;
+
+    return {
+      statusCode: 200,
+      message: 'Proof record fetched successfully',
+      data: {
+        id: record.id,
+        state: record.state,
+        isVerified: record.isVerified,
+        connectionId: record.connectionId,
+        protocolVersion: record.protocolVersion,
+        revealedAttributes: anoncredsProof?.requested_proof?.revealed_attrs ?? {},
+        rawPresentation: anoncredsProof ?? {},
+      },
+    };
+  } catch (error) {
+    console.error('Error fetching proof by ID:', error);
+    throw new NotFoundException('Proof record not found or failed to retrieve.');
+  }
+}
+
   // Get proof records of both agents
   async getproofRecords(agentName: agentType): Promise<unknown> {
     try {
