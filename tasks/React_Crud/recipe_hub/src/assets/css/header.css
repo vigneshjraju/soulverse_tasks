@@ -1,0 +1,40 @@
+.header{
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 20px 40px 0 20px;
+    background: transparent;
+}
+
+.description{
+    font-style: italic;
+    margin-bottom: 8px;
+    font-size: 1.1rem;
+}
+
+.bar{
+    display: flex;
+    align-items: center;
+    border: 2px solid #222;;
+    border-radius: 30px;
+    padding: 4px 16px;
+    background: #fff;
+    width: 320px;
+    height: 48px;
+}
+
+.bar input{
+    border: none;
+    outline: none;
+    font-size: 1.5rem;
+    flex: 1;
+    padding-right: 20px;
+    background: transparent;
+}
+
+.bar button{
+    background: none;
+    border: none;
+    font-size: 2rem;
+    cursor: pointer;
+}

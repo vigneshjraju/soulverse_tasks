@@ -1,0 +1,13 @@
+body, html, #root, .app-bg {
+  height: 100%;
+  margin: 0;
+  font-family: 'Georgia', serif;
+}
+
+.body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #f8f6f1;
+  background-size: cover;
+}

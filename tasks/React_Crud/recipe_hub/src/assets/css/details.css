@@ -1,0 +1,141 @@
+.details-container {
+  background-color: #f8f3e6;
+  min-height: auto;
+  box-sizing: border-box;
+  padding: 40px 80px;
+  font-family: 'Georgia', serif;
+}
+
+.details-title {
+  text-align: center;
+  font-size: 2.5rem;
+  font-style: italic;
+  margin-bottom: 40px;
+}
+
+.details-content {
+  display: flex;
+  gap: 50px;
+  align-items: flex-start;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.details-image img {
+  width: 280px;
+  height: auto;
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.1);
+}
+
+.basic-info {
+  margin-top: 20px;
+  font-size: 1.2rem;
+  line-height: 1.8;
+}
+
+.details-info-box {
+  background-color: #eaeaea;
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+  width: 600px;
+  max-width: 100%;
+  font-size: 1rem;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+}
+
+.details-info-box h3 {
+  margin-top: 20px;
+  margin-bottom: 10px;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.details-info-box p {
+  line-height: 1.6;
+}
+
+.details-info-box ul {
+  padding-left: 20px;
+  list-style: disc;
+}
+
+.details-info-box a {
+  color: #333;
+  text-decoration: underline;
+  word-break: break-all;
+}
+
+.social-icons {
+  margin-top: 15px;
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.social-icons img {
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.social-icons img:hover {
+  transform: scale(1.2);
+}
+
+.recommended-section {
+  background: #f8f3e6;
+  padding: 40px 0 60px 0;
+}
+
+.recommended-section h2 {
+  font-size: 2.2rem;
+  font-family: 'Georgia', serif;
+  font-weight: 600;
+  margin-left: 80px;
+  margin-bottom: 30px;
+}
+
+.recommended-list {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  
+}
+
+
+.recommended-card {
+  background: #d3d3d3;
+  width: 200px;
+  height: 220px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px #eee;
+  
+}
+
+.recommended-card:hover {
+  box-shadow: 0 4px 16px #bbb;
+}
+
+.recommended-card img {
+  width: 120px;
+  height: 120px;
+  margin-top: 20px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.recommended-title {
+  font-size: 1.5rem;
+  font-family: 'Georgia', serif;
+  font-weight: 500;
+  margin-top: 18px;
+  text-align: center;
+}

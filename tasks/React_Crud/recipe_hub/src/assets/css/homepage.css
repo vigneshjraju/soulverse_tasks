@@ -1,0 +1,127 @@
+
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.discover-section {
+  background: #fff;
+  margin: 30px 0 0 0;
+  padding: 40px 0 30px 0;
+  text-align: center;
+  position: relative;
+}
+
+.discover-content {
+  text-align: center;
+  z-index: 1;
+}
+
+.discover-section h1 {
+  font-size: 2.5rem;
+  font-family: 'Georgia', serif;
+  font-weight: 500;
+  margin-bottom: 20px;
+}
+
+.discover-logo {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  box-shadow: 0 0 30px #eee;
+  margin-bottom: 10px;
+}
+
+.discover-meals {
+  width: 220px;
+  height: auto;
+  position: absolute;
+  top: 30px;
+  z-index: 0;
+}
+
+.discover-meals.right {
+  right: 80px;
+}
+
+.discover-meals.left {
+  left: 80px;
+}
+
+
+
+.popular-section {
+  background: #f8f3e6;
+  padding: 40px 0 60px 0;
+  overflow: hidden;
+}
+
+.popular-section h2 {
+  font-size: 2.2rem;
+  font-family: 'Georgia', serif;
+  font-weight: 600;
+  margin-left: 80px;
+  margin-bottom: 30px;
+}
+
+.popular-marquee {
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+}
+
+@keyframes scroll-marquee {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+
+
+.popular-list {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  animation: scroll-marquee 20s linear infinite;
+  width: max-content;
+  
+}
+
+
+.popular-card {
+  background: #d3d3d3;
+  width: 200px;
+  height: 220px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: box-shadow 0.2s;
+  box-shadow: 0 2px 8px #eee;
+  
+}
+
+.popular-card:hover {
+  box-shadow: 0 4px 16px #bbb;
+}
+
+.popular-card img {
+  width: 120px;
+  height: 120px;
+  margin-top: 20px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.popular-title {
+  font-size: 1.5rem;
+  font-family: 'Georgia', serif;
+  font-weight: 500;
+  margin-top: 18px;
+  text-align: center;
+}
