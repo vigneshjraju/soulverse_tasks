@@ -53,7 +53,7 @@ Ensure you have the following installed:
 ### 🗂️ Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/ssi-app.git
+git clone https://git@github.com:vigneshjraju/soulverse_tasks.git
 cd ssi-app
 ```
 
