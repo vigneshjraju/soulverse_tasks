@@ -22,7 +22,7 @@ Built with the **Hyperledger Aries framework**, **AnonCreds**, and the **Credo A
 | 🎓 **Credential Issuance** | Issue credentials to Bob with customizable attributes |
 | 📥 **Credential Storage** | Bob accepts and stores credentials in his wallet |
 | ✅ **Proof Requests** | Acme requests verification of specific credential attributes |
-| 🔍 **Proof Verification** | Bob presents credentials, and Acme verifies the proof manually |
+| 🔍 **Proof Verification** | Bob presents credentials, and Acme see the presented credentials attributes and verifies the proof |
 
 ---
 
