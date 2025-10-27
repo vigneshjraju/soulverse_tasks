@@ -54,7 +54,8 @@ Ensure you have the following installed:
 
 ```bash
 git clone https://git@github.com:vigneshjraju/soulverse_tasks.git
-cd ssi-app
+cd tasks
+cd SSI_Task
 ```
 
 ---
