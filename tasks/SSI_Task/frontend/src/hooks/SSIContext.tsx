@@ -1,4 +1,3 @@
-// hooks/SSIContext.tsx
 import React, { createContext, useContext, useRef } from 'react';
 import type { ReactNode } from 'react';
 import { useSSI } from './useSSI';

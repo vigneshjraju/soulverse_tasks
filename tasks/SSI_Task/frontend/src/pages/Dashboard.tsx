@@ -1,4 +1,3 @@
-// pages/Dashboard.tsx
 import React, { useState, useEffect } from 'react';
 import Button from '../components/ui/Button';
 import { Initialization } from '../components/Initialization';

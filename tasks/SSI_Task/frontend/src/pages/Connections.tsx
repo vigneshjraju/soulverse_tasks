@@ -1,4 +1,3 @@
-// pages/Connections.tsx
 import React, { useState } from 'react';
 import StatusBadge from '../components/ui/StatusBadge';
 import Button from '../components/ui/Button';
