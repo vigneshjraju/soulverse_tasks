@@ -113,13 +113,6 @@ Frontend runs on: **[http://localhost:5173](http://localhost:5173)**
 
 Or open directly: [https://www.youtube.com/watch?v=jyU2lX69-II](https://www.youtube.com/watch?v=jyU2lX69-II)
 
-## 📚 Learn More
-
-- [Hyperledger Indy](https://www.hyperledger.org/use/hyperledger-indy)  
-- [Hyperledger Aries](https://www.hyperledger.org/use/hyperledger-aries)  
-- [bcovrin:test Ledger Explorer](https://indyscan.io/ledger/bcovrin-test)  
-- [Credo Agent SDK](https://github.com/openwallet-foundation/credo-ts)  
-- [AnonCreds Specification](https://hyperledger.github.io/anoncreds-spec/)
 
 ---
 
