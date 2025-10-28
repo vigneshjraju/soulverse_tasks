@@ -4,7 +4,7 @@ import type { Connection, Credential, ProofRecord, AgentState, AgentResponse,DID
 import { useApi } from './useApi';
 
 export const useSSI = () => {
-  // Load initial state from localStorage - SIMPLIFIED APPROACH
+  // Load initial state from localStorage
   const [connections, setConnections] = useState<Connection[]>([]);
   const [credentials, setCredentials] = useState<Credential[]>([]);
   const [proofs, setProofs] = useState<ProofRecord[]>([]);

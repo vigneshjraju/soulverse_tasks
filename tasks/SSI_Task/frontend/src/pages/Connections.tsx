@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import StatusBadge from '../components/ui/StatusBadge';
+// import StatusBadge from '../components/ui/StatusBadge';
 import Button from '../components/ui/Button';
 import { Initialization } from '../components/Initialization';
 import { Plus, RefreshCw, Users, Copy, CheckCircle, Link, Eye, MessageSquare, X } from 'lucide-react';
@@ -160,7 +160,7 @@ export const Connections: React.FC = () => {
               <Link className="h-5 w-5 text-green-500 mr-3" />
               <div>
                 <p className="text-sm font-medium text-green-800">New Invitation Created</p>
-                <p className="text-sm text-green-600 mt-1 font-mono text-xs break-all">
+                <p className="text-sm text-green-600 mt-1 font-mono break-all">
                   {currentInvitation.invitationUrl}
                 </p>
                 <p className="text-xs text-green-500 mt-1">

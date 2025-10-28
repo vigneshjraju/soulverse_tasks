@@ -13,10 +13,10 @@ export const DIDManagement: React.FC = () => {
     dids, 
     schemas, 
     credentialDefinitions,
-    generatingDID,  // This should be 'generatingDID' (lowercase)
-    registeringSchema,  // This should be 'registeringSchema' (lowercase) 
+    generatingDID,  
+    registeringSchema, 
     registeringCredDef,
-    isInitialized,  // This should be 'registeringCredDef' (lowercase)
+    isInitialized, 
     generateDID, 
     registerSchema, 
     registerCredentialDefinition 

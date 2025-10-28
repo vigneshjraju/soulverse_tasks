@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Button from '../components/ui/Button';
 import { Initialization } from '../components/Initialization';
-import { Users, FileText, ShieldCheck, Plus, Link, CheckCircle, Clock, RefreshCw, Key, MessageSquare, Copy, X } from 'lucide-react';
+import { Users, FileText, ShieldCheck, Plus, Link, CheckCircle, RefreshCw, Key, MessageSquare, Copy, X } from 'lucide-react';
 import { useSSIContext } from '../hooks/SSIContext';
 
 export const Dashboard: React.FC = () => {
@@ -169,7 +169,7 @@ export const Dashboard: React.FC = () => {
               <Link className="h-5 w-5 text-green-500 mr-3" />
               <div className="flex-1">
                 <p className="text-sm font-medium text-green-800">New Invitation Created</p>
-                <p className="text-sm text-green-600 mt-1 font-mono text-xs break-all">
+                <p className="text-sm text-green-600 mt-1 font-mono break-all">
                   {currentInvitation.invitationUrl}
                 </p>
                 <p className="text-xs text-green-500 mt-1">

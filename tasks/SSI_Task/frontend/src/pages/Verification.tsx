@@ -2,13 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useSSI } from '../hooks/useSSI';
 import Button from '../components/ui/Button';
 import StatusBadge from '../components/ui/StatusBadge';
-import {
-  RefreshCw,
-  Play,
-  CheckCircle,
-  Timer,
-  Eye,
-} from 'lucide-react';
+import {RefreshCw,Play,CheckCircle,Timer,Eye,} from 'lucide-react';
 import { apiService } from '../services/api';
 import type { ProofRecord } from '../types';
 
