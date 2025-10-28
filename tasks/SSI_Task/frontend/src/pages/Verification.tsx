@@ -47,7 +47,7 @@ export const Verification: React.FC = () => {
       const result = await apiService.getProofRecords(agentView);
       setProofs(result);
     } catch (err: any) {
-      alert('❌ Failed to fetch proof records: ' + err.message);
+      alert(' Failed to fetch proof records: ' + err.message);
     }
   };
 
@@ -63,10 +63,10 @@ export const Verification: React.FC = () => {
         connectionId: selectedConnection,
         credentialDefId: manualCredDefId.trim(),
       });
-      alert('✅ Proof request sent.');
+      alert(' Proof request sent.');
       fetchProofRecords();
     } catch (err: any) {
-      alert('❌ Request failed: ' + err.message);
+      alert(' Request failed: ' + err.message);
     } finally {
       setRequestingProof(false);
     }
@@ -76,10 +76,10 @@ export const Verification: React.FC = () => {
     setPresentingProof(proofId);
     try {
       await apiService.acceptAndPresentProof(proofId);
-      alert('✅ Proof presented.');
+      alert(' Proof presented.');
       fetchProofRecords();
     } catch (err: any) {
-      alert('❌ Presentation failed: ' + err.message);
+      alert(' Presentation failed: ' + err.message);
     } finally {
       setPresentingProof('');
     }
@@ -89,10 +89,10 @@ export const Verification: React.FC = () => {
     setVerifyingProof(proofId);
     try {
       await apiService.verifyProof(proofId);
-      alert('✅ Proof verified.');
+      alert(' Proof verified.');
       fetchProofRecords();
     } catch (err: any) {
-      alert('❌ Verification failed: ' + err.message);
+      alert(' Verification failed: ' + err.message);
     } finally {
       setVerifyingProof('');
     }
@@ -102,13 +102,13 @@ export const Verification: React.FC = () => {
     try {
       const response = await apiService.getProofById(proofId);
 
-      console.log('🧪 FULL /verification/proof-record/:id response:');
+      console.log(' FULL /verification/proof-record/:id response:');
       console.log(response);
 
       const attrs = response.data?.revealedAttributes ?? {};
 
       // Log the raw structure
-      console.log('🔎 Revealed Attributes:', attrs);
+      console.log(' Revealed Attributes:', attrs);
 
       const mappedAttrs = Object.entries(attrs).map(([key, item]: [string, any]) => ({
         name: item.raw ? key.replace(/_ref$/, '').replace(/_/g, ' ') : key,
@@ -117,7 +117,7 @@ export const Verification: React.FC = () => {
 
       setRevealedAttrs(mappedAttrs);
     } catch (err: any) {
-      alert('❌ Failed to fetch proof details: ' + err.message);
+      alert(' Failed to fetch proof details: ' + err.message);
     }
   };
 
