@@ -14,11 +14,11 @@ const api = axios.create({
 // Add request interceptor for debugging
 api.interceptors.request.use(
   (config) => {
-    console.log(`🔄 Making ${config.method?.toUpperCase()} request to: ${config.url}`);
+    console.log(` Making ${config.method?.toUpperCase()} request to: ${config.url}`);
     return config;
   },
   (error) => {
-    console.error('🚨 Request error:', error);
+    console.error(' Request error:', error);
     return Promise.reject(error);
   }
 );
@@ -26,11 +26,11 @@ api.interceptors.request.use(
 // Add response interceptor for debugging
 api.interceptors.response.use(
   (response) => {
-    console.log(`✅ Response received from: ${response.config.url}`, response.status);
+    console.log(` Response received from: ${response.config.url}`, response.status);
     return response;
   },
   (error) => {
-    console.error('🚨 Response error:', {
+    console.error(' Response error:', {
       message: error.message,
       url: error.config?.url,
       status: error.response?.status,
@@ -51,8 +51,8 @@ export const apiService = {
     api.get(`/connection/receive-invitation-bob?invitationUrl=${encodeURIComponent(invitationUrl)}`),
   getConnections: (agent: 'acme' | 'bob') => 
     api.get(`/connection/connections?agent=${agent}`).then(response => {
-      console.log('🔍 API Service - Raw axios response:', response);
-      console.log('🔍 API Service - Response data:', response.data);
+      console.log(' API Service - Raw axios response:', response);
+      console.log(' API Service - Response data:', response.data);
       return response.data;
   }),
   getConnectionId: (oobId: string) => 

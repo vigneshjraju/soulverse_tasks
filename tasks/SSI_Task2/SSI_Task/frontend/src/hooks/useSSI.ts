@@ -185,7 +185,7 @@ export const useSSI = () => {
           oobId: result.data.oobId
         };
         setCurrentInvitation(invitationData);
-        console.log('✅ Invitation created and stored:', invitationData);
+        console.log(' Invitation created and stored:', invitationData);
       } else {
         console.error(' No invitation data in response:', result);
       }
@@ -232,7 +232,7 @@ export const useSSI = () => {
       console.log(' Refreshing connections for Acme agent...');
       
       const response = await apiService.getConnections('acme');
-      console.log('📦 Raw connections API response:', response);
+      console.log(' Raw connections API response:', response);
       
       if (!response) {
         console.error(' No response from connections API');
@@ -286,7 +286,7 @@ export const useSSI = () => {
       }
 
       const allCredentials = [...acmeCredentials, ...bobCredentials];
-      console.log('✅ Combined credentials data:', allCredentials);
+      console.log(' Combined credentials data:', allCredentials);
       setCredentials(allCredentials);
       
     } catch (error: unknown) {
@@ -394,7 +394,7 @@ export const useSSI = () => {
   // FIXED: Load initial data from localStorage ONLY
   useEffect(() => {
     const loadInitialData = () => {
-      console.log('🔄 Loading initial data from localStorage...');
+      console.log(' Loading initial data from localStorage...');
       
       try {
         const savedConnections = localStorage.getItem('ssi-connections');
@@ -474,7 +474,7 @@ export const useSSI = () => {
 
     // Loading states
     initializingAcme,
-    initializingBob: bobAgentHook.loading, // NEW
+    initializingBob: bobAgentHook.loading, 
     creatingInvitation,
     receivingInvitation,
     loadingConnections,
@@ -486,7 +486,7 @@ export const useSSI = () => {
 
     // Actions
     initializeAcme,
-    initializeBob, // NEW
+    initializeBob, 
     createInvitation: handleCreateInvitation,
     clearCurrentInvitation,
     receiveInvitation,
@@ -496,7 +496,7 @@ export const useSSI = () => {
     generateDID,
     registerSchema,
     registerCredentialDefinition,
-    acceptCredentialOffer, // NEW
-    acceptProofRequest, // NEW
+    acceptCredentialOffer, 
+    acceptProofRequest, 
   };
 };

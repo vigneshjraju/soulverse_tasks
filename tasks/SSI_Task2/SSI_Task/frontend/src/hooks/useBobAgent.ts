@@ -11,14 +11,14 @@ export const useBobAgent = () => {
     setLoading(true)
     setError(null)
     try {
-      console.log('🔄 Initializing Bob agent in browser...')
+      console.log(' Initializing Bob agent in browser...')
       const agent = await agentService.initializeBobAgent()
       setBobAgent(agent)
-      console.log('✅ Bob agent initialized successfully')
+      console.log(' Bob agent initialized successfully')
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to initialize Bob agent'
       setError(errorMessage)
-      console.error('❌ Bob agent initialization failed:', err)
+      console.error(' Bob agent initialization failed:', err)
     } finally {
       setLoading(false)
     }

@@ -117,7 +117,7 @@ export class BobAgentService {
     await this.bobAgent.initialize()
     this.isInitialized = true
     
-    console.log('✅ Bob Agent initialized in browser')
+    console.log('Bob Agent initialized in browser')
     return this.bobAgent
   }
 
@@ -127,7 +127,7 @@ export class BobAgentService {
     }
 
     try {
-      console.log('📨 Receiving invitation from Acme agent...')
+      console.log(' Receiving invitation from Acme agent...')
       
       // Parse the invitation URL from backend Acme agent
       const invitation = OutOfBandInvitation.fromUrl(invitationUrl)
@@ -142,7 +142,7 @@ export class BobAgentService {
       // Wait for connection to be established
       const connectedConnection = await this.bobAgent.connections.returnWhenIsConnected(connectionRecord.id)
       
-      console.log('✅ Connection established with Acme agent:', connectedConnection.id)
+      console.log(' Connection established with Acme agent:', connectedConnection.id)
       
       return {
         connectionId: connectedConnection.id,
@@ -151,7 +151,7 @@ export class BobAgentService {
         theirLabel: connectedConnection.theirLabel
       }
     } catch (error) {
-      console.error('❌ Failed to receive invitation:', error)
+      console.error(' Failed to receive invitation:', error)
       throw error
     }
   }
@@ -210,7 +210,7 @@ export class BobAgentService {
         },
         })
 
-        console.log('✅ Proof presentation created:', result.id)
+        console.log(' Proof presentation created:', result.id)
         return result
 
     } catch (error) {
