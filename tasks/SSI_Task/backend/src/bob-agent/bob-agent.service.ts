@@ -13,8 +13,8 @@ import axios from 'axios';
 @Injectable()
 export class BobAgentService {
 
-    private bobAgent: Agent
-    private readonly logger = new Logger(BobAgentService.name)  
+    private bobAgent: Agent;
+    private readonly logger = new Logger(BobAgentService.name);  
 
     async initializeBobAgent(){
         try{
